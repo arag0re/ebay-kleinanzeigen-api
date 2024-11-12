@@ -1,15 +1,9 @@
 from seleniumwire import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from lxml import etree
 from bs4 import BeautifulSoup
-import urllib
-import random
-import datetime
-import sys
-import json
 import requests
 import time
 
@@ -24,19 +18,13 @@ def getInseratDetails(url):
 
         proxy = getProxy()
 
-        prox_options = {
-        'proxy': {
-            'http': proxy
-        }
-        }
-
         options = Options()
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--user-agent='+GET_UA())
         options.add_argument('--incognito')
-        driver = webdriver.Chrome(service=Service(chrome_driver_path), options=options, seleniumwire_options=prox_options)
+        driver = webdriver.Chrome(service=Service(chrome_driver_path), options=options)
 
         driver.get(url)
 
