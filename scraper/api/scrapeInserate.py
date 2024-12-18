@@ -56,7 +56,6 @@ def scrapeInserateUrls(
         if priceFrom or priceTo:
             price = f"preis:{priceFrom}:{priceTo}/"
 
-
         if type_: # Cabrio, Kombi, etc
             _type_ = f"+autos.typ_s:{type_}"
 
@@ -72,8 +71,9 @@ def scrapeInserateUrls(
         if powerFrom or powerTo:
             power = f"+autos.power_i:{powerFrom}%2C{powerTo}"
 
-        if unlistedCarModel:                                                            # If unlistedCarModel is set we dont add a brand or model into the url
-            unlistedCarModelStr = f"{unlistedCarModel}/k0"                              # We use the searchengine for unlistedCarModels
+        if unlistedCarModel:
+            unlistedCarModelStr = unlistedCarModel.replace(" ", "-")                                                            # If unlistedCarModel is set we dont add a brand or model into the url
+            unlistedCarModelStr = f"{unlistedCarModelStr}/k0"  # We use the searchengine for unlistedCarModels
 
         if brand: # like Volkeswagen
             if model: # i.e. Golf

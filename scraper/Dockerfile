@@ -15,7 +15,7 @@ RUN wget -N "https://storage.googleapis.com/chrome-for-testing-public/$(google-c
     unzip chromedriver-linux64.zip -d /usr/local/bin/ && \
     rm chromedriver-linux64.zip && \
     mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
-    rm -r /usr/local/bin/chromedriver-linux64 && \
+    rm -rf /usr/local/bin/chromedriver-linux64 && \
     chmod +x /usr/local/bin/chromedriver
 
 # Exposing our app port in docker internal network

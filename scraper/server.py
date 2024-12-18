@@ -47,6 +47,4 @@ def viewsGet():
 if __name__ == '__main__':
     # from waitress import serve
     # serve(api, host="0.0.0.0", port=80)
-    api.run(host="0.0.0.0", port=80
-    , debug=True
-    )
+    api.run(host="0.0.0.0", port=80, debug=False)

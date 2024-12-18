@@ -1,12 +1,28 @@
-version: '3.7'
 services:
-    app:
-        build: app
+    scraper:
+        build: scraper
+    bot:
+        container_name: bot
+        build: bot
+        ports:
+            - 1312:1312
+        depends_on:
+            - nginx
+    frontend:
+        container_name: frontend
+        build: frontend
+        extra_hosts:
+            - "host.docker.internal:host-gateway"  
+        ports:
+            - 3000:3000
+            - 4000:4000 
+        depends_on:
+            - bot
     nginx:
         container_name: nginx
         build: nginx
         ports:
             - 80:80
         depends_on:
-           - app
+            - scraper
         restart: always
