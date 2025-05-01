@@ -1,0 +1,6 @@
+[submodule "bot"]
+	path = bot
+	url = https://gitlab.sternburg.beer/nodejs/meinanzeigenbot
+[submodule "frontend"]
+	path = frontend
+	url = https://gitlab.sternburg.beer/nodejs/meinanzeigen-frontend
