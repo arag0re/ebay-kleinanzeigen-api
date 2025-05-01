@@ -8,7 +8,7 @@ from functions.getProxy import *
 from functions.getUserAgent import *
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 def scrapeInserateUrls(
     brand,
@@ -72,7 +72,7 @@ def scrapeInserateUrls(
             power = f"+autos.power_i:{powerFrom}%2C{powerTo}"
 
         if unlistedCarModel:
-            unlistedCarModelStr = unlistedCarModel.replace(" ", "-")                                                            # If unlistedCarModel is set we dont add a brand or model into the url
+            unlistedCarModelStr = unlistedCarModel.replace(" ", "-") # If unlistedCarModel is set we dont add a brand or model into the url
             unlistedCarModelStr = f"{unlistedCarModelStr}/k0"  # We use the searchengine for unlistedCarModels
 
         if brand: # like Volkeswagen

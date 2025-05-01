@@ -2,6 +2,7 @@ from flask import Flask, json, request
 from api.getInseratDetails import *
 from api.scrapeInserate import *
 from api.getViews import *
+from api.sendMessage import *
 
 api = Flask(__name__)
 
@@ -44,7 +45,19 @@ def viewsGet():
     views = getViews(url)
     return json.dumps(views)
 
+# Get views from a specific listing
+@api.route('/sendMsg', methods=['POST'])
+async def sendMsg():
+    url= request.headers['url']
+    message  = request.headers['msg']
+    result = await sendMessage(url, message)
+    if result:
+        response = {'result': result, 'msg': 'Successfully sent message.'}
+    else:
+        response = {"result": result, "msg": "Failed to send message."}
+    return json.dumps(response)
+
 if __name__ == '__main__':
     # from waitress import serve
     # serve(api, host="0.0.0.0", port=80)
-    api.run(host="0.0.0.0", port=80, debug=False)
+    api.run(host="0.0.0.0", port=80)

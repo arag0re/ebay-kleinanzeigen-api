@@ -1,8 +1,5 @@
-from seleniumwire import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
 from lxml import etree
+from nodriver import Browser, Tab, Element, cdp, start
 from bs4 import BeautifulSoup
 import requests
 import time
@@ -10,23 +7,26 @@ import time
 from functions.getProxy import *
 from functions.getUserAgent import *
 
-def getInseratDetails(url):
-    chrome_driver_path = "/usr/local/bin/chromedriver"
-    driver = None
+async def getInseratDetails(url):
     try:
         start_time = time.time()
 
         proxy = getProxy()
 
-        options = Options()
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--user-agent='+GET_UA())
-        options.add_argument('--incognito')
-        driver = webdriver.Chrome(service=Service(chrome_driver_path), options=options)
+        browser = await start(
+            browser_args=[
+                "--headless=new",
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-web-security",
+                "--disable-site-isolation-trials",
+                "--incognito",
+                "--user-agent=" + GET_UA(),
+            ]
+        )
+        
 
-        driver.get(url)
+        tab = await browser.get(url)
 
         try:
             title = driver.find_element(By.XPATH, '//*[@id="viewad-title"]').text

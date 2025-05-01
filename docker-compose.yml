@@ -1,6 +1,17 @@
 services:
     scraper:
         build: scraper
+        restart: always
+        volumes:
+          - ./cookies.pkl:/opt/meinanzeigen/cookies.pkl
+    nginx:
+        container_name: nginx
+        build: nginx
+        ports:
+            - 80:80
+        depends_on:
+            - scraper
+        restart: always
     bot:
         container_name: bot
         build: bot
@@ -8,6 +19,7 @@ services:
             - 1312:1312
         depends_on:
             - nginx
+        restart: always
     frontend:
         container_name: frontend
         build: frontend
@@ -18,11 +30,5 @@ services:
             - 4000:4000 
         depends_on:
             - bot
-    nginx:
-        container_name: nginx
-        build: nginx
-        ports:
-            - 80:80
-        depends_on:
-            - scraper
         restart: always
+    

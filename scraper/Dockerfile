@@ -1,5 +1,5 @@
 # Using a python small basic image
-FROM python:3.9
+FROM python:3.11
 
 # Adding trusting keys to apt for repositories
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
@@ -18,6 +18,7 @@ RUN wget -N "https://storage.googleapis.com/chrome-for-testing-public/$(google-c
     rm -rf /usr/local/bin/chromedriver-linux64 && \
     chmod +x /usr/local/bin/chromedriver
 
+RUN mkdir /opt/meinanzeigen/
 # Exposing our app port in docker internal network
 EXPOSE 80
 
@@ -33,4 +34,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # run the application
-CMD python server.py
+CMD ["python", "server.py"]
