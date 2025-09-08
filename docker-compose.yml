@@ -1,34 +1,47 @@
 services:
-    scraper:
-        build: scraper
-        restart: always
-        volumes:
-          - ./cookies.pkl:/opt/meinanzeigen/cookies.pkl
-    nginx:
-        container_name: nginx
-        build: nginx
-        ports:
-            - 80:80
-        depends_on:
-            - scraper
-        restart: always
-    bot:
-        container_name: bot
-        build: bot
-        ports:
-            - 1312:1312
-        depends_on:
-            - nginx
-        restart: always
-    frontend:
-        container_name: frontend
-        build: frontend
-        extra_hosts:
-            - "host.docker.internal:host-gateway"  
-        ports:
-            - 3000:3000
-            - 4000:4000 
-        depends_on:
-            - bot
-        restart: always
-    
+  scraper:
+    build: scraper
+    restart: always
+    volumes:
+      - ./cookies:/opt/meinanzeigen
+
+  nginx:
+    container_name: nginx
+    build: nginx
+    ports:
+      - 80:80
+    depends_on:
+      - scraper
+    restart: always
+
+  sqlite-init:
+    container_name: db-init
+    image: alpine/sqlite:3.49.2
+    volumes:
+      - ./db:/opt/
+    ports:
+      - 1433:1433
+    working_dir: /opt
+    entrypoint: sh
+    command: -c "sqlite3 meinanzeigen.sqlite < init.sql"
+
+  bot:
+    container_name: bot
+    build: bot
+    ports:
+      - 1312:1312
+    depends_on:
+      - nginx
+    restart: always
+
+  frontend:
+    container_name: frontend
+    build: frontend
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - 3000:3000
+      - 4000:4000
+    depends_on:
+      - bot
+    restart: always

@@ -7,8 +7,6 @@ import time
 from functions.getProxy import *
 from functions.getUserAgent import *
 
-import logging
-logging.basicConfig(level=logging.INFO)
 
 def scrapeInserateUrls(
     brand,
@@ -25,8 +23,8 @@ def scrapeInserateUrls(
     kmTo,
     priceFrom,
     priceTo,
-    unlistedCarModel,   # unlistedCarModel means that kleinanzeigen dont got a category specifically for this model
-):                      # so we need to use the searchengine
+    unlistedCarModel,  # unlistedCarModel means that kleinanzeigen dont got a category specifically for this model
+):  # so we need to use the searchengine
     chrome_driver_path = "/usr/local/bin/chromedriver"
     driver = None
     try:
@@ -34,14 +32,14 @@ def scrapeInserateUrls(
 
         proxy = getProxy()
 
-        ez = "" # Erstzulassung
+        ez = ""  # Erstzulassung
         km = ""
         _type_ = ""
         shiftTypeStr = ""
         huStr = ""
         power = ""
         price = ""
-        fuel  = ""
+        fuel = ""
         modelStr = ""
         unlistedCarModelStr = ""
 
@@ -56,33 +54,34 @@ def scrapeInserateUrls(
         if priceFrom or priceTo:
             price = f"preis:{priceFrom}:{priceTo}/"
 
-        if type_: # Cabrio, Kombi, etc
+        if type_:  # Cabrio, Kombi, etc
             _type_ = f"+autos.typ_s:{type_}"
 
         if shiftType:  # automatik & manuell
             shiftTypeStr = f"+autos.shift_s:{shiftType}"
 
-        if hu: # Jahreszahl bis wann TÜV
+        if hu:  # Jahreszahl bis wann TÜV
             huStr = f"+autos.tuevy_i:{hu}%2C"
 
-        if fuelType: # diesel, benzin, gas, elektro?
+        if fuelType:  # diesel, benzin, gas, elektro?
             fuel = f"+autos.fuel_s:{fuelType}"
 
         if powerFrom or powerTo:
             power = f"+autos.power_i:{powerFrom}%2C{powerTo}"
 
         if unlistedCarModel:
-            unlistedCarModelStr = unlistedCarModel.replace(" ", "-") # If unlistedCarModel is set we dont add a brand or model into the url
+            unlistedCarModelStr = unlistedCarModel.replace(
+                " ", "-"
+            )  # If unlistedCarModel is set we dont add a brand or model into the url
             unlistedCarModelStr = f"{unlistedCarModelStr}/k0"  # We use the searchengine for unlistedCarModels
 
-        if brand: # like Volkeswagen
-            if model: # i.e. Golf
+        if brand:  # like Volkeswagen
+            if model:  # i.e. Golf
                 modelStr = f"+autos.model_s:{model}"
-            url += f"{brand}/{price}{unlistedCarModelStr}c216{ez}{fuel}{km}+autos.marke_s:{brand}{modelStr}{power}{shiftTypeStr}{huStr}{_type_}" # Brand, Model and Type are logically attached, cause not every model is available from every brand. Also not every model is available in any type.
+            url += f"{brand}/{price}{unlistedCarModelStr}c216{ez}{fuel}{km}+autos.marke_s:{brand}{modelStr}{power}{shiftTypeStr}{huStr}{_type_}"  # Brand, Model and Type are logically attached, cause not every model is available from every brand. Also not every model is available in any type.
         else:
             url += f"{price}{unlistedCarModelStr}c216{ez}{fuel}{km}{power}{shiftTypeStr}{huStr}{huStr}{_type_}"
 
-        logging.debug(f"URL: {url}")  # Log the result
         prox_options = {"proxy": {"http": proxy}}
 
         options = Options()

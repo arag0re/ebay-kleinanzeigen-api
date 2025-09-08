@@ -57,7 +57,7 @@ Now, install Docker and Docker Compose on your machine. You can find the install
 3. You're ready to go, just run the following command in the root folder of the project:
 
 ```sh
-docker-compose up --build -d --scale app=3
+docker-compose up --build -d --scale scraper=3
 ```
 
 With this command, you start 3 replicas of the API. You can change the number of replicas to your liking. (max 20 due to NGINX config)

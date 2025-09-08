@@ -1,28 +1,50 @@
 #!/bin/bash
 
+# Exit immediately on any error
+set -e
+
+# Wait for user input before exiting
 wait_exit() {
-  echo "Press enter to exit";
-  read -r;
-  exit;
+  echo -e "\nPress enter to exit..."
+  read -r
+  exit
 }
 
-## bot build section (nodejs-backend for managing the search-threads)
-cd bot || wait_exit
-npm i
+# Utility to safely change directories
+safe_cd() {
+  cd "$1" || { echo "❌ Failed to enter directory: $1"; wait_exit; }
+}
+
+# -----------------------------
+# 🔧 Build: Node.js Backend (bot)
+# -----------------------------
+echo -e "\n🚀 Building Node.js backend (bot)..."
+
+safe_cd bot
+npm install
 npm run build || wait_exit
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-cp ./.env ./build/.env # BEWARE !!! 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+# ⚠️ Copy .env into the build directory
+echo -e "⚠️  Copying .env to build folder..."
+cp ./.env ./build/.env
+
 cd ..
 
-## frontend build that uses the nodejs-backend
-cd frontend || wait_exit
-npm i
+# -------------------------------
+# 💻 Build: Frontend (uses bot API)
+# -------------------------------
+echo -e "\n🌐 Building frontend..."
+
+safe_cd frontend
+npm install
 npm run build || wait_exit
 cd ..
 
-# building the docker-images and starting up all containers (all containers represent a part of the app)
+# --------------------------------------
+# 🐳 Docker: Build and start containers
+# --------------------------------------
+echo -e "\n📦 Building Docker images and starting containers..."
 docker compose up --build -d --scale scraper=3 || wait_exit
-echo "Build Complete"
 
+echo -e "\n✅ Build Complete!"
 wait_exit

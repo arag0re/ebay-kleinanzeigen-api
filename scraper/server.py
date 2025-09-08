@@ -3,19 +3,34 @@ from api.getInseratDetails import *
 from api.scrapeInserate import *
 from api.getViews import *
 from api.sendMessage import *
+import asyncio
+import logging
+
+# Suppress Flask and Werkzeug logs
+logging.getLogger("werkzeug").setLevel(logging.ERROR)
+logging.getLogger("flask").setLevel(logging.ERROR)
+
+# Suppress SeleniumWire logs
+logging.getLogger("seleniumwire.storage").setLevel(logging.WARNING)
+logging.getLogger("seleniumwire.backend").setLevel(logging.WARNING)
+logging.getLogger("seleniumwire.handler").setLevel(logging.WARNING)
+
+# Set root logger level (affects print/logging.debug/info globally)
+logging.basicConfig(level=logging.WARNING)
 
 api = Flask(__name__)
 
+
 # Get details from a specific listing
-@api.route('/getInseratDetails', methods=['GET'])
+@api.route("/getInseratDetails", methods=["GET"])
 def details():
-    url = request.headers['url']
+    url = request.headers["url"]
     details = getInseratDetails(url)
     return json.dumps(details)
 
 
 # Get all inserate listing
-@api.route('/getInserateUrls', methods=['GET'])
+@api.route("/getInserateUrls", methods=["GET"])
 def urls():
     # Extract query parameters from the request
     brand = request.args.get("brand", default="")
@@ -34,30 +49,42 @@ def urls():
     priceTo = request.args.get("priceTo", default="")
     unlistedCarModel = request.args.get("unlistedCarModel", default="")
 
-    urls = scrapeInserateUrls(brand, model, type_, shiftType, hu, fuelType, powerFrom, powerTo, ezFrom, ezTo, kmFrom, kmTo, priceFrom, priceTo, unlistedCarModel)
+    urls = scrapeInserateUrls(
+        brand,
+        model,
+        type_,
+        shiftType,
+        hu,
+        fuelType,
+        powerFrom,
+        powerTo,
+        ezFrom,
+        ezTo,
+        kmFrom,
+        kmTo,
+        priceFrom,
+        priceTo,
+        unlistedCarModel,
+    )
     return json.dumps(urls)
 
 
 # Get views from a specific listing
-@api.route('/getViews', methods=['GET'])
+@api.route("/getViews", methods=["GET"])
 def viewsGet():
-    url = request.headers['url']
+    url = request.headers["url"]
     views = getViews(url)
     return json.dumps(views)
 
-# Get views from a specific listing
-@api.route('/sendMsg', methods=['POST'])
-async def sendMsg():
-    url= request.headers['url']
-    message  = request.headers['msg']
-    result = await sendMessage(url, message)
-    if result:
-        response = {'result': result, 'msg': 'Successfully sent message.'}
-    else:
-        response = {"result": result, "msg": "Failed to send message."}
-    return json.dumps(response)
 
-if __name__ == '__main__':
+# Get views from a specific listing
+@api.route("/sendMsg", methods=["POST"])
+def sendMsg():
+    sendMessage(request.headers["url"], request.headers["msg"])
+    return json.dumps({"msg": "sending..."})
+
+
+if __name__ == "__main__":
     # from waitress import serve
     # serve(api, host="0.0.0.0", port=80)
-    api.run(host="0.0.0.0", port=80)
+    api.run(host="0.0.0.0", port=80, debug=False)
